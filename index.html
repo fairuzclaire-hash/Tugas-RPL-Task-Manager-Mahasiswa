@@ -8,6 +8,75 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Task Manager Mahasiswa</h1>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Tugas</span>
+                        <span class="stat-value" id="totalTasks">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Belum Selesai</span>
+                        <span class="stat-value pending" id="pendingTasks">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
 
+    <main class="container main-content">
+        <section class="add-task-section">
+            <button class="btn btn-primary" id="addTaskBtn">
+                <i class="fas fa-plus"></i> Tambah Tugas Baru
+            </button>
+        </section>
+
+        <section class="filter-tabs">
+            <button class="tab-btn active" data-status="all">
+                <i class="fas fa-list"></i> Semua
+            </button>
+            <button class="tab-btn" data-status="belum dikerjakan">
+                <i class="fas fa-clock"></i> Belum Dikerjakan
+            </button>
+            <button class="tab-btn" data-status="sedang dikerjakan">
+                <i class="fas fa-spinner"></i> Sedang Dikerjakan
+            </button>
+            <button class="tab-btn" data-status="selesai">
+                <i class="fas fa-check-circle"></i> Selesai
+            </button>
+        </section>
+
+        <section class="tasks-grid" id="tasksGrid">
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-inbox"></i>
+                <p>Belum ada tugas. Tambahkan tugas pertama kamu!</p>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">
+                    <i class="fas fa-plus-circle"></i> Tambah Tugas Baru
+                </h2>
+                <button class="close-btn" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="taskForm">
+                <input type="hidden" id="taskId">
+                
+                <div class="form-group">
+                    <label for="taskName">
+                        <i class="fas fa-tasks"></i> Nama Tugas
+                    </label>
+                    <input type="text" id="taskName" placeholder="Contoh: Tugas UTS Pemrograman Web" required>
+                </div>
 </body>
 </html>
