@@ -97,3 +97,64 @@ async function createTask(taskData) {
         showToast('Gagal menambahkan tugas', 'error');
     }
 }
+
+async function updateTask(id, taskData) {
+    try  {
+        taskData.id = id;
+
+        const response = await fetch(`${API_URL}/update_task.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(taskData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showToast('✅ Tugas berhasil diupdate');
+            loasTasks();
+            closeModalHandler();
+        } else {
+            showToast(data.message || 'Gagal mengupdate tugas', 'error');
+        }
+    } catch (error) {
+        console.error('Error updating task:', error);
+        showToast('Gagal mengupdate tugas', 'error');
+    }
+
+c function deleteTask(id) {
+    if (!confirm('Yakin ingin menghapus tugas ini?')) return;
+
+    try {
+        const response = await fetch(`${API_URL}/delete_task.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id })
+        });
+
+        const data await response.json();
+
+        if (data.success) {
+            showToast('🗑️ Tugas berhasil dihapus!');
+            loadTasks();
+        } else {
+            showToast(data.message || 'Gagal menghapus tugas', 'error');
+        }
+
+c function loadTaskForEdit(id) {
+    try {
+        const response = await fetch(`${API_URL}/get_task.php?id=${id}`);
+        const data task = await response.json();
+
+        if (data.success && data.task) {
+            const task = data.task;
+            editingTaskId = id;
+
+        document.getElementById('taskName').value = task.task_name;
+        document.getElementById('courseName').value = task.course_name;
+        document.getElementById('deadline').value = formatDateTimeForInput(task.deadline);
+        document.getElementById('status').value = task.status;
+        document.getElementById('priority').value = task.priority;
+        document.getElementById('notes').value = task.notes || '';
+
+        
