@@ -56,3 +56,44 @@ function setupEventListeners() {
         });
     });
 }
+
+async function loadTasks() {
+    try {
+        const response = await fetch(`${API_URL}/get_tasks.php`);
+        const data = await response.json();
+        
+        if (data.success && data.tasks) {
+            displayTasks(data.tasks);
+            updateStats(data.tasks);
+        } else {
+            console.error('Error:', data.message);
+            showToast('Gagal memuat tugas', 'error');
+        }
+    } catch (error) {
+        console.error('Error loading tasks:', error);
+        showToast('Gagal memuat tugas', 'error');
+    }
+}
+
+async function createTask(taskData) {
+    try {
+        const response = await fetch(`${API_URL}/create_task.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(taskData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('✅ Tugas berhasil ditambahkan!');
+            loadTasks();
+            closeModalHandler();
+        } else {
+            showToast(data.message || 'Gagal menambahkan tugas', 'error');
+        }
+    } catch (error) {
+        console.error('Error creating task:', error);
+        showToast('Gagal menambahkan tugas', 'error');
+    }
+}
