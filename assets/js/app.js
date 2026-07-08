@@ -121,8 +121,9 @@ async function updateTask(id, taskData) {
         console.error('Error updating task:', error);
         showToast('Gagal mengupdate tugas', 'error');
     }
+}
 
-c function deleteTask(id) {
+async function deleteTask(id) {
     if (!confirm('Yakin ingin menghapus tugas ini?')) return;
 
     try {
@@ -140,8 +141,13 @@ c function deleteTask(id) {
         } else {
             showToast(data.message || 'Gagal menghapus tugas', 'error');
         }
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        showToast('Gagal menghapus tugas', 'error');
+    }
+}
 
-c function loadTaskForEdit(id) {
+async function loadTaskForEdit(id) {
     try {
         const response = await fetch(`${API_URL}/get_task.php?id=${id}`);
         const data task = await response.json();
@@ -150,11 +156,67 @@ c function loadTaskForEdit(id) {
             const task = data.task;
             editingTaskId = id;
 
-        document.getElementById('taskName').value = task.task_name;
-        document.getElementById('courseName').value = task.course_name;
-        document.getElementById('deadline').value = formatDateTimeForInput(task.deadline);
-        document.getElementById('status').value = task.status;
-        document.getElementById('priority').value = task.priority;
-        document.getElementById('notes').value = task.notes || '';
+            document.getElementById('taskName').value = task.task_name;
+            document.getElementById('courseName').value = task.course_name;
+            document.getElementById('deadline').value = formatDateTimeForInput(task.deadline);
+            document.getElementById('status').value = task.status;
+            document.getElementById('priority').value = task.priority;
+            document.getElementById('notes').value = task.notes || '';
+    
+            if (modalTitle) {
+                modalTitle.innerHTML = '<i class="fas fa-edit"></i> Edit Tugas';
+            }
+            if (taskModal) {
+                taskModal.classList.add('show');
+            }
+        } else {
+            showToast(data.message || 'Gagal memuat data tugas', 'error');
+        }
+    } catch (error) {
+        console.error('Error loading task:', error);
+        shoToast('Gagal memuat data tugas', 'error');
+    }
+}
 
-        
+function displayTasks(tasks) {
+    if (!tasksGrid) return;
+
+    let filteredTasks = tasks;
+    if (currentFilter !=='all') {
+        filteredTasks = tasks.filter(task => task.status === currentFilter);
+    }
+
+    filteredTasks.sort((a,b) => new Date(a.deadline) - new Date(b.deadline));
+
+    tasksGrid.innerHTML = '';
+
+    if (filteredTasks.length === 0) {
+        if (emptyState) {
+            emptyState.style.display = 'block';
+            tasksGrid.appendChild(emptyState);
+        }
+        return;
+    }
+
+    if (emptyState) {
+        emptyState.style.display = 'none';
+    }
+
+    flteredTasks.forEach(task => {
+        const taskCard = createTaskCard(task);
+        taskGrid.appendChild(taskCard);
+    });
+}
+
+function createTaskCard(task) {
+    const card = document.createElement('div');
+    card.className = `task-card priority-${task.priority}`;
+
+    const isUrgent = isDeadlineUrgent(task.deadline);
+    const deadlineClass = isUrgent ? 'deadline urgent' : 'deadline';
+
+    const statusIcons = {
+        'belum dikerjakan': 'fa-clock',
+        'sedang dikerjakan': 'fa_spinner',
+        'selesai': 'fa-check-circle'
+    };
