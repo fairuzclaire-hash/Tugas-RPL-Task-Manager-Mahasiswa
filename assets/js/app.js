@@ -59,8 +59,8 @@ function setupEventListeners() {
 
 async function loadTasks() {
     try {
-        const response = await fetch(`${API_URL}/get_tasks.php`);
-        const data = await response.json();
+        const data = await eel.get_tasks()();
+
         
         if (data.success && data.tasks) {
             displayTasks(data.tasks);
@@ -77,13 +77,7 @@ async function loadTasks() {
 
 async function createTask(taskData) {
     try {
-        const response = await fetch(`${API_URL}/create_task.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(taskData)
-        });
-        
-        const data = await response.json();
+        const data = await eel.create_task(taskData)();
         
         if (data.success) {
             showToast('✅ Tugas berhasil ditambahkan!');
@@ -99,20 +93,14 @@ async function createTask(taskData) {
 }
 
 async function updateTask(id, taskData) {
-    try  {
+    try {
         taskData.id = id;
-
-        const response = await fetch(`${API_URL}/update_task.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(taskData)
-        });
-
-        const data = await response.json();
+        
+        const data = await eel.update_task(taskData)();
 
         if (data.success) {
             showToast('✅ Tugas berhasil diupdate');
-            loasTasks();
+            loadTasks();
             closeModalHandler();
         } else {
             showToast(data.message || 'Gagal mengupdate tugas', 'error');
@@ -125,15 +113,9 @@ async function updateTask(id, taskData) {
 
 async function deleteTask(id) {
     if (!confirm('Yakin ingin menghapus tugas ini?')) return;
-
+    
     try {
-        const response = await fetch(`${API_URL}/delete_task.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: id })
-        });
-
-        const data await response.json();
+        const data = await eel.delete_task(id)();
 
         if (data.success) {
             showToast('🗑️ Tugas berhasil dihapus!');
@@ -149,8 +131,7 @@ async function deleteTask(id) {
 
 async function loadTaskForEdit(id) {
     try {
-        const response = await fetch(`${API_URL}/get_task.php?id=${id}`);
-        const data task = await response.json();
+        const data = await eel.get_task(id)();
 
         if (data.success && data.task) {
             const task = data.task;
@@ -174,7 +155,7 @@ async function loadTaskForEdit(id) {
         }
     } catch (error) {
         console.error('Error loading task:', error);
-        shoToast('Gagal memuat data tugas', 'error');
+        showToast('Gagal memuat data tugas', 'error');
     }
 }
 
@@ -202,9 +183,9 @@ function displayTasks(tasks) {
         emptyState.style.display = 'none';
     }
 
-    flteredTasks.forEach(task => {
+    filteredTasks.forEach(task => {
         const taskCard = createTaskCard(task);
-        taskGrid.appendChild(taskCard);
+        tasksGrid.appendChild(taskCard);
     });
 }
 
@@ -217,7 +198,7 @@ function createTaskCard(task) {
 
     const statusIcons = {
         'belum dikerjakan': 'fa-clock',
-        'sedang dikerjakan': 'fa_spinner',
+        'sedang dikerjakan': 'fa-spinner',
         'selesai': 'fa-check-circle'
     };
 
@@ -230,7 +211,7 @@ function createTaskCard(task) {
     card.innerHTML = `
         <div class="task-header">
             <div>
-                <h3 class="task-title">${escapeHtml(task.task_name)}</3>
+                <h3 class="task-title">${escapeHtml(task.task_name)}</h3>
                 <span class="task-course">
                     <i class="fas fa-book"></i> ${escapeHtml(task.course_name)}
                 </span>
@@ -246,11 +227,11 @@ function createTaskCard(task) {
 
             <div class="task-info">
                 <div class="info-item">
-                    <i class="fas fa-calender-alt"></i>
+                    <i class="fas fa-calendar-alt"></i>
                     <span class="${deadlineClass}">${formatDeadline(task.deadline)}</span>
                 </div>
                 <div class="info-item">
-                    <i class="fas fa-calendar-alt"></i>
+                    <i class="fas fa-flag"></i>
                     <span>Prioritas: <strong>${capitalizeFirst(task.priority)}</strong></span>
                 </div>
                 <div class="info-item">
