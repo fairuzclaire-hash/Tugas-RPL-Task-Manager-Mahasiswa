@@ -11,4 +11,8 @@ kemudian melihat daftar seluruh tugas yang belum selesai sehingga lebih mudah me
 Langkah pertama klik BUILD_EXE.bat untuk menginstall bahan yg diperlukan jika sudah menginstall maka akan dibuatkan folder dist otomatis
 didalam folder dist terdapat TaskManagerMahasiswa.exe
 
+pastikan eel sudah ter install
+CMD INSTALL
+pip install eel==0.16.0
+
 DONE aplikasi bisa dijalankan
