@@ -584,3 +584,37 @@ textarea {
     .form-row {
         grid-template-columns: 1fr;
     }
+
+    .filter-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .tab-btn {
+        flex: 1 1 calc(50% - 0.25rem);
+        min-width: 140px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .main-content {
+        padding: 1.5rem 1rem;
+    }
+    
+    .modal-content {
+        margin: 1rem;
+    }
+}
+
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.tab-btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
